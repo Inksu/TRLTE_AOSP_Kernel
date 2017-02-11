@@ -21,16 +21,13 @@
 #include <linux/leds.h>
 #include <linux/qpnp/pwm.h>
 #include <linux/err.h>
-<<<<<<< HEAD
 #ifdef CONFIG_POWERSUSPEND
 #include <linux/powersuspend.h>
 #endif
 
-=======
 #include <linux/uaccess.h>
 #include <linux/msm_mdp.h>
 #include <linux/display_state.h>
->>>>>>> 0fe2e6ea0718... display: add a simple api to query the display state (on/off) at any point in time
 #include "mdss_dsi.h"
 #include "mdss_livedisplay.h"
 
