@@ -437,8 +437,8 @@ static void do_write_log(struct logger_log *log, const void *buf, size_t count)
 	if (logger_mode == 0)
 	{
 			return;
-	} 
-        
+	}
+
 	len = min(count, log->size - log->w_off);
 	memcpy(log->buffer + log->w_off, buf, len);
 
@@ -466,7 +466,7 @@ static ssize_t do_write_log_from_user(struct logger_log *log,
 	if (logger_mode == 0)
 	{
 			return 0;
-	} 
+	}
 
 	len = min(count, log->size - log->w_off);
 	if (len && copy_from_user(log->buffer + log->w_off, buf, len))
@@ -570,7 +570,7 @@ static ssize_t logger_aio_write(struct kiocb *iocb, const struct iovec *iov,
 
 	/* wake up any blocked readers */
 	wake_up_interruptible(&log->wq);
-	
+
 #ifdef CONFIG_SEC_DEBUG
 	if (klog_buf[0]=='!' && klog_buf[1]=='@')
 		printk(KERN_INFO "%s\n", klog_buf);
@@ -792,10 +792,10 @@ static const struct file_operations logger_fops = {
 	.release = logger_release,
 };
 
-#ifdef CONFIG_SEC_DEBUG 
+#ifdef CONFIG_SEC_DEBUG
 /* Use the old way because the new logger gets log buffers by means of vmalloc().
     getlog tool considers that log buffers lie on physically contiguous memory area. */
-    
+
 /*
  * Defines a log structure with name 'NAME' and a size of 'SIZE' bytes, which
  * must be a power of two, and greater than
@@ -840,13 +840,13 @@ struct logger_log * log_buffers[]={
 struct logger_log *sec_get_log_buffer(char *log_name, int size)
 {
 	struct logger_log **log_buf=&log_buffers[0];
-	
+
 	while (*log_buf) {
 		if (!strcmp(log_name,(*log_buf)->misc.name)) {
 			return *log_buf;
 		}
 
-		log_buf++;			
+		log_buf++;
 	}
 	return NULL;
 }
@@ -862,7 +862,7 @@ static int __init create_log(char *log_name, int size)
 	int ret = 0;
 	struct logger_log *log;
 
-#ifdef CONFIG_SEC_DEBUG 
+#ifdef CONFIG_SEC_DEBUG
 
 	log = sec_get_log_buffer(log_name,size);
 	if (!log) {
@@ -940,44 +940,9 @@ out_free_buffer:
 	vfree(buffer);
 
 	return ret;
-#endif //CONFIG_SEC_DEBUG	
+#endif //CONFIG_SEC_DEBUG
 
 }
-
-
-#if (defined CONFIG_SEC_DEBUG && defined CONFIG_SEC_DEBUG_SUBSYS)
-int sec_debug_subsys_set_logger_info(
-	struct sec_debug_subsys_logger_log_info *log_info)
-{
-	/*
-	struct secdbg_logger_log_info log_info = {
-		.stinfo = {
-			.buffer_offset = offsetof(struct logger_log, buffer),
-			.w_off_offset = offsetof(struct logger_log, w_off),
-			.head_offset = offsetof(struct logger_log, head),
-			.size_offset = offsetof(struct logger_log, size),
-			.size_t_typesize = sizeof(size_t),
-		},
-	};
-	*/
-	log_info->stinfo.buffer_offset = offsetof(struct logger_log, buffer);
-	log_info->stinfo.w_off_offset = offsetof(struct logger_log, w_off);
-	log_info->stinfo.head_offset = offsetof(struct logger_log, head);
-	log_info->stinfo.size_offset = offsetof(struct logger_log, size);
-	log_info->stinfo.size_t_typesize = sizeof(size_t);
-
-	log_info->main.log_paddr = __pa(&log_main);
-	log_info->main.buffer_paddr = __pa(_buf_log_main);
-	log_info->system.log_paddr = __pa(&log_system);
-	log_info->system.buffer_paddr = __pa(_buf_log_system);
-	log_info->events.log_paddr = __pa(&log_events);
-	log_info->events.buffer_paddr = __pa(_buf_log_events);
-	log_info->radio.log_paddr = __pa(&log_radio);
-	log_info->radio.buffer_paddr = __pa(_buf_log_radio);
-
-	return 0;
-}
-#endif
 
 
 #if (defined CONFIG_SEC_DEBUG && defined CONFIG_SEC_DEBUG_SUBSYS)
@@ -1037,7 +1002,7 @@ static int __init logger_init(void)
 	ret = create_log(LOGGER_LOG_SYSTEM, CONFIG_LOGCAT_SIZE*1024);
 	if (unlikely(ret))
 		goto out;
-	
+
 #ifdef CONFIG_SEC_DEBUG
 	sec_getlog_supply_loggerinfo(_buf_log_main, _buf_log_radio,
 					 _buf_log_events, _buf_log_system);
